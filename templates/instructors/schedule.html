@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid my-5">
+    <div class="row">
+        <div class="col-10 mx-auto">
+            <div class="card my-5 p-4 rounded-4">
+                <div class="table-responsive">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <a class="mb-3" href="{{ url_for('schedule_down') }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Descargar horario">                            
+                               <!--  <span class="tooltip-text">Descargar horario</span> -->
+                                <img src="{{ url_for( 'static', filename = 'images/export-excel-35.png' ) }}" alt=""></a>
+                            <a type="button" class="mb-3 mx-2 custom-tooltip" title="Detalle RAPS" data-bs-toggle="tooltip" data-bs-placement="right">                                
+                                <img src="{{ url_for( 'static', filename = 'images/rap1-icon-35.png' ) }}" alt="" data-bs-toggle="modal" data-bs-target="#modalRaps" >
+                            </a>                                                    
+                            
+                        </div>
+                        <!-- <form action="" method="post">
+                            <div class="mb-2">
+                                <label for=""></label>
+                                <select class="form-select" name="trimestre" id="trimestre" onchange="this.form.submit()">
+                                    <option value="1-2024">1-2024</option>
+                                    <option value="2-2024">2-2024</option>                                    
+                                </select>
+                            </div>                            
+                        </form> -->
+                        <!-- <p class="fs-6 ml-4"> <span class="fw-bold ml-4">Trimestre académico:</span> {{trimestre}}</p>  -->                       
+                    </div>                
+                    <table class="table table-bordered">                        
+                        <tr>
+                            <th></th>
+                            {% for day in days %}
+                            <th style="background-color: #C5EAE8;">{{ day }}</th>
+                            {% endfor %}
+                        </tr>
+                        {% for hour, hour_f in hours_combined %}
+                        <tr>
+                            <td class="fw-bold">{{ hour_f }}</td>
+                            {% for day in days %}
+                            <td>
+                                {% for clase in schedule.horario[day][hour] %}
+                                <small class="d-block text-center fw-bold">{{ clase.NOMBRE_COMPETENCIA }}</small>
+                                <small class="d-block text-center">{{ clase.FICHA }}</small>
+                                <small class="d-block text-center">{{ clase.AMB }}</small>
+                                {% endfor %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalRaps" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitleId">
+                    Detalle Resultados de Aprendizajes
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Ficha</th>
+                                <th>Trimestre</th>
+                                <th>Programa</th>
+                                <th>Palabra clave</th>
+                                <th>Norma de Competencia (Sofíaplus) </th>
+                                <th>Compentencia</th>
+                                <th>RAP</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detalle in schedule.detalles['key'] %}
+                                {% for det in detalle %}
+                            <tr>
+                                <td>{{ det.FICHA }}</td>
+                                <td>{{ det.TRIMESTRE }}</td>
+                                <td>{{ det.PROGRAMA }}</td>
+                                <td>{{ det.PALABRA_CLAVE }}</td>
+                                <td>{{ det.NCL }}</td>
+                                <td>{{ det.COMPETENCIA }}</td>
+                                <td>{{ det.RAP }}</td>
+                            </tr>
+                                {% endfor %}    
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
